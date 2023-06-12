@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loket RS</title>
+</head>
+
+<body>
+    <h1>Tambah Pasien</h1>
+    <button onclick="tambahAntrian()">Tambah Pasien</button>
+
+    <h2>Bacain Pengumuman</h2>
+
+    <button class="bacain" value="1">Loket 1</button>
+    <button class="bacain" value="2">Loket 2</button>
+    <button class="bacain" value="3">Loket 3</button>
+    <script>
+
+        const daftarPasien = []
+
+        function tambahAntrian() {
+            var lanjut = confirm("Apakah mau tambah pasien?")
+            if (lanjut === true) {
+                var namaPasien = prompt("Nama Pasien?")
+                daftarPasien.push(namaPasien)
+                tambahAntrian()
+            }
+        }
+
+
+        function bacaNomorAntrian(nama, loket) {
+            var kalimat = "Saudara " + nama + " Silahkan ke loket " + loket
+            var api = 'http://api.voicerss.org/?key=dea226ea236e42f7b1a3faace1b20c2a&hl=id-id&src=' + kalimat
+            window.audio = new Audio()
+            window.audio.src = api
+            window.audio.play()
+        }
+
+
+        document.querySelectorAll(".bacain").forEach(el => {
+            el.onclick = function () {
+                if (daftarPasien.length < 1) {
+                    alert("daftar pasien habis")
+                } else {
+                    let namaPasien = daftarPasien.shift()
+                    let loket = el.value
+                    bacaNomorAntrian(namaPasien, loket)
+                }
+            }
+        })
+
+    </script>
+</body>
+
+</html>
