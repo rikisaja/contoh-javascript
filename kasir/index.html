@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Javascript Kopi</title>
+    <link rel="stylesheet" href="aset/bootstrap.min.css">
+    <link rel="stylesheet" href="aset/bootstrap-icons.css">
+    <link rel="stylesheet" href="aset/style.css">
+</head>
+
+<body>
+    <img src="aset/barista.png" class="barista d-none">
+    <section class="warung-kopi text-center my-3">
+        <div class="container">
+            <h2 class="mb-4">
+                Selamat Datang Di
+                <span id="natok"></span>
+            </h2>
+            <div id="baris_produk" class="row">
+
+
+            </div>
+        </div>
+        </div>
+    </section>
+
+    <section id="tabel_harga" class="tabel_harga mt-5 mb-3 d-none">
+        <div style="background-color: brown;" class="nodis banner_kuy">
+            <img src="aset/logo_kuy.png" alt="">
+        </div>
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-6">
+                    <h2 class="d-flex flex-wrap align-items-center justify-content-between">
+                        <span>Data Pesanan</span>
+                        <button onclick="window.print()" class="noprint btn btn-info">Cetak</button>
+                    </h2>
+                    <h5>Customer: <span id="nama_customer_span"></span></h5>
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th class="noprint" scope="col">Hapus</th>
+                                <th scope="col">#</th>
+                                <th scope="col">Produk</th>
+                                <th class="text-end" scope="col">Harga</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbody_pesanan">
+
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <th class="noprint"></th>
+                                <th class="text-end" colspan="2">Subtotal:</th>
+                                <th id="subtotal_html" class="text-end">0</th>
+                            </tr>
+                            <tr>
+                                <th class="noprint"></th>
+                                <th class="text-end" colspan="2">Pajak (10%):</th>
+                                <th id="pajak_html" class="text-end">0</th>
+                            </tr>
+                            <tr>
+                                <th class="noprint"></th>
+                                <th class="text-end fw-bold" colspan="2">Total</th>
+                                <th id="total_html" class="text-end fw-bold">0</th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </section>
+    <script>
+
+        /* Kita buat dummy produk disini */
+
+        var data_produk = [
+            {
+                "foto": "aset/produk/product_capuchino.jpg",
+                "nama": "Cappuccino",
+                "harga": 30000
+            },
+            {
+                "foto": "aset/produk/product_espresso.jpg",
+                "nama": "Espresso",
+                "harga": 20000
+            },
+            {
+                "foto": "aset/produk/product_latte.jpg",
+                "nama": "Latte",
+                "harga": 25000
+            },
+            {
+                "foto": "aset/produk/product_kopi_susu.jpg",
+                "nama": "Kopi Susu",
+                "harga": 35000,
+            }
+        ]
+
+        /*
+            Pertama-tama kita daftarkan variabel untuk nama_toko, kalimat dsb.
+            nama_customer dikosongkan, karena nanti akan diisi melalui prompt
+            data_pesanan berupa array (kumpulan data) yang kita daftarkan dulu di awal
+            dan isinya masih kosong, untuk nanti di modifikasi ketika klik pada tombol pesan
+        */
+        var nama_toko = "Kedai Kopi Kuy"
+        var kalimat_pembuka = `Selamat datang di ${nama_toko}`
+        var nama_customer = ''
+        var data_pesanan = []
+
+        /* 
+            Fungsi innerHTML adalah memodifikasi isi dari elemen html
+            dalam hal ini natok adalah elemen span dengan id natok (silahkan lihat kode html di atas)
+            dan isi dari span dengan id natok yang awalnya kosong akan diisi dengan
+            variabel nama toko yang di daftarkan di atas
+        */
+        natok.innerHTML = nama_toko
+
+
+        /* 
+        Kita disini membuat beberapa fungsi untuk memudahkan perhitungan
+        supaya bisa kita jalankan berkali kali tanpa harus mengetik kode
+        hal ini sangat berguna agar kode rapi dan mudah untuk dibaca
+        */
+
+        /* Membuat fungsi adanya titik pemisah pada ribuan */
+        var nf = new Intl.NumberFormat('id-ID');
+
+        function ucapanAwal() {
+            alert(kalimat_pembuka)
+            nama_customer = prompt("Siapa Nama Anda?")
+            nama_customer_span.innerHTML = nama_customer
+        }
+
+        /* 
+        Fungsi tampilkanProduk adalah untuk menampilkan gambar, nama, dan harga produk
+        yang ada pada file produk.js, dalam hal ini elemen yang akan di isi oleh produk ini
+        adalah elemen html dengan id baris_produk dengan perintah innerHTML
+
+        Kita akan membuat variabel template yang isinya kosong, lalu karena
+        data_produk pada produk.js berbentuk array, maka kita menggunakan
+        foreach untuk perulangan, dengan menggunakan template += maka nilai
+        variabel template yang tadinya kosong, akan di isi secara berulang
+        berdasarkan jumlah produk yang ada dalam produk.js
+
+        Coba saja tambahkan data_produk pada produk.js, maka nanti otomatis
+        tampilan pada baris_produk akan ikut berubah secara otomatis
+        */
+
+        function tampilkanProduk() {
+            var template = ''
+            data_produk.forEach((produk, index) => {
+                template += `<div class="col-md-3 mb-4">
+                                <div class="card" style="width: 18rem;">
+                                    <img src="${produk.foto}" class="card-img-top" alt="...">
+                                    <div class="card-body">
+                                        <h5 class="card-title">${produk.nama}</h5>
+                                        <p class="card-text">${nf.format(produk.harga)}</p>
+                                        <button onclick="tambahProduk(${index})" class="btn btn-primary pesan_btn"><i class="bi bi-cart-plus"></i> Tambah</button>
+                                    </div>
+                                </div>
+                            </div>`
+            })
+            baris_produk.innerHTML = template
+        }
+
+        function hitungProduk() {
+            /*  
+                fungsi length untuk mencari tahu apakah ada data dalam data_pesanan
+                karena data_pesanan berbentuk array ([]) length akan memberikan jumlah data
+                yang ada, jika tidak ada data maka hasilnya kosong (0)
+            */
+
+            if (data_pesanan.length == 0) {
+                /*
+                    Jika data_pesanan kosong, maka tambahkan kelas 'd-none' (dihilangkan)
+                    pada elemen html dengan id tabel_harga
+                    classList.add adalah fungsi javascript untuk menambahkan kelas
+                    classList.remove adalah fungsi untuk menghapus kelas pada elemen html
+                    perintah tbody_pesanan.innerHTM = "" akan menghapus isi dari elemen tbody
+                    yang memiliki id tbody_pesanan
+                */
+                tabel_harga.classList.add("d-none")
+                tbody_pesanan.innerHTML = ""
+            } else {
+                tabel_harga.classList.remove("d-none")
+                /*
+                Disini jika ada produk, maka kita akan menambahkan tabel pesanan
+                dengan menggunakan template_tabel. dan memodifikasi tampilan
+                elemen tbody dengan id tbody_pesanan yang tadinya kosong
+                harap pelajari HTML table untuk lebih memahami struktur tabel
+                index+1 karena array dimulai dari 0, sedangkan untuk
+                penomoran baris tabel kita mulai dari angka 1 maka
+                perlu ditambahkan +1 agar tampilan start nomornya dimulai
+                dari angka 1, subtotal akan menampung seluruh harga dari foreach
+                */
+                var template_tabel = ''
+                var subtotal = 0
+                data_pesanan.forEach((pesanan, index) => {
+                    template_tabel += `<tr>
+                                            <td class="noprint"><i onclick="kurangiPesanan(${index})" role="button" class="bi bi-cart-x"></i></td>
+                                            <td>${index + 1}</td>
+                                            <td>${pesanan.nama}</td>
+                                            <td class="text-end">${nf.format(pesanan.harga)}</td>
+                                        </tr>`
+                    subtotal = subtotal + pesanan.harga
+                })
+
+                tbody_pesanan.innerHTML = template_tabel
+
+                subtotal_html.innerHTML = nf.format(subtotal)
+                pajak = subtotal * 10 / 100
+                pajak_html.innerHTML = nf.format(pajak)
+                total = subtotal + pajak
+                total_html.innerHTML = nf.format(total)
+            }
+        }
+
+        /*
+        Fungsi tambah produk akan menambahkan produk ke dalam array data_pesanan
+        saat tombol tambah di klik dengan mengirim data index ke dalam fungsi
+        coba lihat onclick pada foreach di fungsi tampilkanProduk
+        */
+
+        function tambahProduk(index) {
+            data_pesanan.push(data_produk[index])
+            hitungProduk()
+        }
+
+        function kurangiPesanan(index) {
+            data_pesanan.splice(index, 1)
+            hitungProduk()
+        }
+
+
+        /* 
+        Function pada javascript tidak secara otomatis dijalankan. untuk menjalankannya
+        dapat memanggil nama fungsinya diakhiri tanda ()
+        */
+        tampilkanProduk()
+        ucapanAwal()
+
+
+
+
+    </script>
+</body>
+
+</html>

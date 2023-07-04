@@ -1,0 +1,72 @@
+@font-face {
+    font-family: 'Poppins';
+    src: url(poppins.woff2);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    /* agar scroll ketika klik pada navigasi menjadi halus */
+    scroll-behavior: smooth;
+}
+
+body {
+    /* mendaftarkan semua teks pada body menjadi family Poppins */
+    font-family: 'Poppins';
+}
+
+.barista {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+}
+
+.nodis {
+    visibility: hidden;
+    display: none;
+}
+
+.banner_kuy {
+    background-color: brown;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+@media print {
+    body {
+        visibility: hidden;
+    }
+
+    #tabel_harga {
+        visibility: visible;
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+    }
+
+    .nodis {
+        display: block;
+        visibility: visible;
+    }
+
+    .banner_kuy {
+        background-color: brown;
+        padding: 20px;
+        margin-bottom: 20px;
+        print-color-adjust: exact;
+    }
+
+    #tabel_harga .col-md-6 {
+        width: 100% !important;
+    }
+
+    #tabel_harga .noprint {
+        visibility: hidden;
+        display: none;
+    }
+}
