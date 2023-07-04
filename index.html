@@ -1,57 +1,24 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="id">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Loket RS</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Bootstrap demo</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
 </head>
 
 <body>
-    <h1>Tambah Pasien</h1>
-    <button onclick="tambahAntrian()">Tambah Pasien</button>
+    <div class="container my-4">
+        <h2 class="mb-3">Contoh Kode Javascript</h2>
+        <a href="kasir/" class="btn btn-primary me-2">Kasir</a>
+        <a href="loket/" class="btn btn-primary me-2">Loket</a>
+    </div>
 
-    <h2>Bacain Pengumuman</h2>
-
-    <button class="bacain" value="1">Loket 1</button>
-    <button class="bacain" value="2">Loket 2</button>
-    <button class="bacain" value="3">Loket 3</button>
-    <script>
-
-        const daftarPasien = []
-
-        function tambahAntrian() {
-            var lanjut = confirm("Apakah mau tambah pasien?")
-            if (lanjut === true) {
-                var namaPasien = prompt("Nama Pasien?")
-                daftarPasien.push(namaPasien)
-                tambahAntrian()
-            }
-        }
-
-
-        function bacaNomorAntrian(nama, loket) {
-            var kalimat = "Saudara " + nama + " Silahkan ke loket " + loket
-            var api = 'http://api.voicerss.org/?key=dea226ea236e42f7b1a3faace1b20c2a&hl=id-id&src=' + kalimat
-            window.audio = new Audio()
-            window.audio.src = api
-            window.audio.play()
-        }
-
-
-        document.querySelectorAll(".bacain").forEach(el => {
-            el.onclick = function () {
-                if (daftarPasien.length < 1) {
-                    alert("daftar pasien habis")
-                } else {
-                    let namaPasien = daftarPasien.shift()
-                    let loket = el.value
-                    bacaNomorAntrian(namaPasien, loket)
-                }
-            }
-        })
-
-    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
+        crossorigin="anonymous"></script>
 </body>
 
 </html>
