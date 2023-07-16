@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Keranjang Belanja</title>
+    <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="vendor/bootstrap/bootstrap.min.css">
+    <link rel="stylesheet" href="vendor/bootstrap/bootstrap-icons.css">
+</head>
+
+<body>
+    <nav class="navbar navbar-dark bg-success navbar-expand-lg bisadicopy">
+        <div class="container">
+            <a class="navbar-brand" href="https://www.rikikurnia.com">
+                <img src="images/logo/logo_kuy.png" height="40" alt="image">
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav11"
+                aria-controls="navbarNav11" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav11">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">Home</a>
+                    </li>
+                    <li class="nav-item active">
+                        <a class="nav-link" href="index.html#best-seller">Best Seller</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html#our-team">Our Team</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html#review">Review</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html#contact-us">Contact US</a>
+                    </li>
+                </ul>
+                <a href="produk.html" class="btn btn-outline-light position-relative">
+                    Shop
+                </a>
+
+                <a class="btn btn-outline-light ms-md-3"
+                    href="https://wa.me/6281290465033?text=Halo saya mau beli kopi">
+                    <i class="bi bi-whatsapp"></i> Chat
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <section class="keranjang">
+        <div class="container my-4">
+            <h1 class="text-center mb-3">Keranjang Belanja</h1>
+
+            <div class="row justify-content-center">
+                <div class="col-12 col-md-6">
+                    <ul class="list-group mb-4" id="ul_list_produk">
+
+                    </ul>
+                </div>
+            </div>
+            <div class="row justify-content-center">
+                <div id="keteranganharga" class="col-12 col-md-6">
+                    <div class="d-flex align-items-center justify-content-end">
+                        <h5 class="me-3 text-end">Subtotal</h5>
+                        <h5 id="subtotal_html">250.000</h5>
+                    </div>
+                    <div class="d-flex align-items-center justify-content-end">
+                        <h5 class="me-3 text-end">PPN (10%)</h5>
+                        <h5 id="ppn_html">50.000</h5>
+                    </div>
+                    <div class="d-flex align-items-center justify-content-end">
+                        <h4 class="me-3 text-end">Total</h4>
+                        <h4 id="total_html">1.250.000</h4>
+                    </div>
+                    <p class="text-center">Transfer ke REK BCA 1234567 a.n Riki Kurnia dan kirim bukti pembayaran ke
+                        admin kami</p>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+
+    <script>
+
+        var tmp_list_belanja = []
+        var hargatotal = 0
+
+        function updateListCart() {
+
+            var list_belanja = localStorage.getItem("list_belanja")
+            if (list_belanja != null) {
+                var list_belanja_object = JSON.parse(localStorage.getItem("list_belanja"))
+                list_belanja_object.forEach(item => {
+
+                    hargatotal += item.hargaint
+
+                    var idx = tmp_list_belanja.findIndex(itemTMP => {
+                        if (itemTMP.nama === item.nama) {
+                            return true;
+                        }
+                        return false;
+                    })
+
+                    if (idx !== -1) {
+                        tmp_list_belanja[idx].qty = tmp_list_belanja[idx].qty + 1
+                    } else {
+                        tmp_list_belanja.push(item)
+                    }
+                })
+                updateTampilan()
+            }
+        }
+
+        updateListCart()
+
+        function updateTampilan() {
+            if (tmp_list_belanja.length < 1) {
+                ul_list_produk.innerHTML = `<li class="list-group-item d-flex justify-content-center align-items-center"><h3>Keranjang Belanja Anda Kosong</h3></li>`
+                keteranganharga.classList.add("d-none")
+            } else {
+                keteranganharga.classList.remove("d-none")
+                var template_list = ``
+                tmp_list_belanja.forEach((item, index) => {
+                    template_list += `<li class="list-group-item d-flex justify-content-between align-items-center">
+                            <img src="${item.foto}" height="40" width="40">
+                            <div class="ms-2 me-auto">
+                                <div class="fw-bold">${item.nama}</div>
+                                <span class="harga">${item.harga}</span> x
+                                <span class="jumlah">${item.qty}</span>
+                            </div>
+                            <div class="fw-bold mx-3">${titikPemisahRupiah(item.hargaint * item.qty)}</div>
+                            <button onclick="hapusProduk(${index})" class="btn btn-danger btn-sm">Hapus</span>
+                        </li>`
+                })
+                ul_list_produk.innerHTML = template_list
+                subtotal_html.innerHTML = titikPemisahRupiah(hargatotal)
+                ppn_html.innerHTML = titikPemisahRupiah(hargatotal * 10 / 100)
+                total_html.innerHTML = titikPemisahRupiah(hargatotal + (hargatotal * 10 / 100))
+            }
+
+
+        }
+
+        /* Fungsi Untuk memberi titik ribuan pada rupiah untuk memudahkan pembacaan harga */
+        function titikPemisahRupiah(x) {
+            return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+        }
+
+        /* Fungsi untuk menghapus quantity dan produk pada cart */
+
+        function hapusProduk(index) {
+            hargatotal = hargatotal - tmp_list_belanja[index].hargaint
+
+            var list_belanja = localStorage.getItem("list_belanja")
+            var list_belanja_object = JSON.parse(localStorage.getItem("list_belanja"))
+            var nama_produk = tmp_list_belanja[index].nama
+
+            var idx = list_belanja_object.findIndex(itemTMP => {
+                if (itemTMP.nama === nama_produk) {
+                    return true;
+                }
+                return false;
+            })
+
+            if (idx !== -1) {
+                list_belanja_object.splice(idx, 1)
+                localStorage.setItem("list_belanja", JSON.stringify(list_belanja_object))
+            }
+            if (tmp_list_belanja[index].qty > 1) {
+                tmp_list_belanja[index].qty = tmp_list_belanja[index].qty - 1
+            } else {
+                tmp_list_belanja.splice(index, 1)
+            }
+            updateTampilan()
+
+        }
+
+    </script>
+
+</body>
+
+</html>
